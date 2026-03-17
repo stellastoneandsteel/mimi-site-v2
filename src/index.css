@@ -1,0 +1,106 @@
+:root {
+  --hardware-gray: #a5a2a2;
+  --forest: #4c5a42;
+  --lime: #32cd32;
+  --black: #000000;
+  --dark: #1a1a1a;
+  --panel: #9e9b9b;
+  --crt-bg: #888888;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-radius: 0 !important;
+}
+
+html {
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  font-smooth: never;
+}
+
+body {
+  margin: 0;
+  background: var(--hardware-gray);
+  color: var(--forest);
+  font-family: "Inconsolata", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+.logotype {
+  font-family: "Press Start 2P", monospace;
+  font-weight: 400;
+}
+
+a {
+  color: var(--lime);
+}
+
+button {
+  font-family: "Inconsolata", monospace;
+  cursor: pointer;
+  border: 2px solid var(--black);
+}
+
+input,
+select,
+textarea {
+  font-family: "Inconsolata", monospace;
+  border: 2px solid var(--black);
+  border-radius: 0 !important;
+  padding: 8px 10px;
+  background: #fff;
+  color: var(--black);
+}
+
+.section-border {
+  border-bottom: 2px solid var(--black);
+}
+
+.chapter-bar {
+  background: var(--black);
+  color: var(--lime);
+  font-family: "Inconsolata", monospace;
+  font-size: 11px;
+  padding: 10px 16px;
+  border-bottom: 2px solid var(--black);
+}
+
+.pixel-img {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .hero-grid > div:first-child {
+    border-right: none !important;
+    border-bottom: 2px solid #000;
+  }
+  .product-grid,
+  .waitlist-grid,
+  .node-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .product-grid > div:first-child,
+  .waitlist-grid > div:first-child {
+    border-right: none !important;
+    border-bottom: 2px solid #000;
+  }
+  .system-grid-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .arcade-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
