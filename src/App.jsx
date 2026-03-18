@@ -626,18 +626,67 @@ export default function App() {
         </div>
       )}
 
-      {/* 1. Floppy disk header */}
+      {/* 1. Floppy disk header — CSS/HTML drawn */}
       <section style={sectionStyle({ background: DARK, padding: "20px 16px 24px", textAlign: "center" })}>
-        <img
-          src={A("mimi-floppy-1.png")}
-          alt=""
+        <div
           style={{
             width: 200,
-            height: "auto",
-            display: "block",
+            height: 220,
             margin: "0 auto",
+            background: BLACK,
+            border: "2px solid #32CD32",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
           }}
-        />
+        >
+          {/* Top: label */}
+          <div
+            style={{
+              background: BLACK,
+              borderBottom: "2px solid #32CD32",
+              padding: "8px 12px",
+              fontFamily: FONT_HEAD,
+              fontSize: 10,
+              color: LIME,
+              lineHeight: 1.5,
+              textAlign: "center",
+            }}
+          >
+            <div>MIMI AI</div>
+            <div>v1.0 — 1993</div>
+          </div>
+          {/* Middle: golden doodle face */}
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: 0,
+            }}
+          >
+            <img
+              src={A("mimi_infinity_3.png")}
+              alt=""
+              style={{
+                width: 50,
+                height: 50,
+                objectFit: "contain",
+                imageRendering: "pixelated",
+              }}
+            />
+          </div>
+          {/* Bottom: gray sliding metal */}
+          <div
+            style={{
+              height: 52,
+              background: "linear-gradient(180deg, #6b6b6b 0%, #4a4a4a 100%)",
+              borderTop: "2px solid #32CD32",
+              boxShadow: "inset 0 2px 4px rgba(0,0,0,0.3)",
+            }}
+          />
+        </div>
         <div
           style={{
             marginTop: 14,
