@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
 const API_ORIGIN = import.meta.env.VITE_API_ORIGIN || "https://usemimiai.com";
 const A = (f) => `/assets/mimi-pixel-fal/${f}`;
@@ -140,7 +140,7 @@ function CrtPong() {
       ctx.stroke();
       ctx.setLineDash([]);
       ctx.fillStyle = "#32CD32";
-      const fs = Math.max(12, Math.floor(w * 0.055));
+      const fs = Math.max(13, Math.floor(w * 0.055));
       ctx.font = `${fs}px "Press Start 2P", monospace`;
       ctx.fillText(String(g.scoreL), Math.floor(w * 0.2), Math.floor(h * 0.14));
       ctx.fillText(String(g.scoreR), Math.floor(w * 0.68), Math.floor(h * 0.14));
@@ -188,7 +188,7 @@ function CrtPong() {
           left: 0,
           right: 0,
           textAlign: "center",
-          fontSize: 11,
+          fontSize: 15,
           color: "#32CD32",
           fontFamily: "Inconsolata, monospace",
           pointerEvents: "none",
@@ -215,7 +215,7 @@ function PixelImg({ file, alt, className = "pixel-img", style }) {
           background: "#333",
           color: "#32cd32",
           fontFamily: "Inconsolata, monospace",
-          fontSize: 11,
+          fontSize: 15,
           padding: 12,
           display: "flex",
           alignItems: "center",
@@ -229,6 +229,55 @@ function PixelImg({ file, alt, className = "pixel-img", style }) {
   }
   return (
     <img src={src} alt={alt || file} className={className} style={style} onError={() => setBad(true)} />
+  );
+}
+
+function HeroStarField() {
+  const stars = useMemo(
+    () =>
+      Array.from({ length: 64 }, (_, i) => ({
+        id: i,
+        left: (i * 37 + (i % 7) * 13) % 94 + 3,
+        top: (i * 53 + (i % 11) * 17) % 88 + 4,
+        dur: 2.4 + (i % 5) * 0.85 + (i % 3) * 0.4,
+        delay: (i % 8) * 0.55 + (i % 4) * 0.3,
+        variant: i % 3,
+      })),
+    []
+  );
+  return (
+    <>
+      <div
+        className="scanlines"
+        style={{
+          position: "absolute",
+          inset: 0,
+          overflow: "hidden",
+          pointerEvents: "none",
+        }}
+      >
+        {stars.map((s) => (
+          <span
+            key={s.id}
+            style={{
+              position: "absolute",
+              left: `${s.left}%`,
+              top: `${s.top}%`,
+              width: 2,
+              height: 2,
+              background: "#32cd32",
+              borderRadius: 0,
+              animation: `hero-star-${s.variant} ${s.dur}s ease-in-out ${s.delay}s infinite`,
+            }}
+          />
+        ))}
+      </div>
+      <style>{`
+        @keyframes hero-star-0 { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+        @keyframes hero-star-1 { 0%, 100% { opacity: 0.35; } 40% { opacity: 0.9; } 70% { opacity: 0.25; } }
+        @keyframes hero-star-2 { 0%, 100% { opacity: 0.15; } 55% { opacity: 1; } }
+      `}</style>
+    </>
   );
 }
 
@@ -416,7 +465,10 @@ export default function App() {
       setCraneWireLen(36 + Math.round(ease * 120));
       if (frame >= maxFrames) {
         clearInterval(tick);
-        const left = craneXRef.current < 50;
+        const lx = 22;
+        const rx = 78;
+        const x = craneXRef.current;
+        const left = Math.abs(x - lx) <= Math.abs(x - rx);
         setGrabbed(left ? "you" : "them");
         setHighlightYou(left);
         setHighlightThem(!left);
@@ -523,7 +575,7 @@ export default function App() {
           <pre
             style={{
               fontFamily: "Inconsolata, monospace",
-              fontSize: 12,
+              fontSize: 15,
               color: "#32CD32",
               margin: "16px 0 0",
               width: 200,
@@ -535,6 +587,37 @@ export default function App() {
           </pre>
         </div>
       )}
+      <section
+        className="section-border"
+        style={{
+          width: "100%",
+          background: "#1a1a1a",
+          padding: "20px 16px 24px",
+          textAlign: "center",
+          borderBottom: "2px solid #000",
+        }}
+      >
+        <img
+          src="/assets/mimi-pixel-fal/mimi-floppy-3-transparent.png"
+          alt=""
+          style={{ width: 160, height: "auto", imageRendering: "pixelated", display: "block", margin: "0 auto" }}
+        />
+        <div
+          style={{
+            marginTop: 14,
+            fontFamily: "Inconsolata, monospace",
+            fontSize: 15,
+            color: "#32CD32",
+          }}
+        >
+          // Inserting Mimi AI v1.0, 1993...
+          <span className="floppy-insert-cursor">_</span>
+        </div>
+        <style>{`
+          @keyframes floppy-cursor-blink { 50% { opacity: 0; } }
+          .floppy-insert-cursor { animation: floppy-cursor-blink 1s step-end infinite; }
+        `}</style>
+      </section>
       {/* SECTION 1 */}
       <header
         style={{
@@ -566,7 +649,7 @@ export default function App() {
           background: "#000",
           color: "#32cd32",
           fontFamily: "Inconsolata, monospace",
-          fontSize: 13,
+          fontSize: 15,
           borderBottom: "2px solid #000",
         }}
       >
@@ -599,39 +682,6 @@ export default function App() {
         <span>MIMI_AI.exe — Comprehensive Unit of Intelligence</span>
       </div>
 
-      {/* Floppy disk — first section before boot sequence */}
-      <section
-        className="section-border"
-        style={{
-          width: "100%",
-          background: "#1a1a1a",
-          padding: "20px 16px 24px",
-          textAlign: "center",
-          borderBottom: "2px solid #000",
-        }}
-      >
-        <img
-          src="/assets/mimi-pixel-fal/mimi-floppy-3-transparent.png"
-          alt=""
-          style={{ width: 160, height: "auto", imageRendering: "pixelated", display: "block", margin: "0 auto" }}
-        />
-        <div
-          style={{
-            marginTop: 14,
-            fontFamily: "Inconsolata, monospace",
-            fontSize: 13,
-            color: "#32CD32",
-          }}
-        >
-          // Inserting Mimi AI v1.0, 1993...
-          <span className="floppy-insert-cursor">_</span>
-        </div>
-        <style>{`
-          @keyframes floppy-cursor-blink { 50% { opacity: 0; } }
-          .floppy-insert-cursor { animation: floppy-cursor-blink 1s step-end infinite; }
-        `}</style>
-      </section>
-
       <BootSequence />
 
       {/* SECTION 4 HERO */}
@@ -660,21 +710,78 @@ export default function App() {
             position: "relative",
           }}
         >
-          <div className="scanlines" style={{ position: "relative", overflow: "hidden", minHeight: 200 }}>
-            {Array.from({ length: 96 }, (_, i) => (
-              <span
-                key={`s-${i}`}
-                style={{
-                  position: "absolute",
-                  left: `${((i * 47) % 89) + 3}%`,
-                  top: `${((i * 71) % 85) + 5}%`,
-                  width: 2,
-                  height: 2,
-                  background: "#32cd32",
-                  borderRadius: 0,
-                }}
-              />
-            ))}
+          <div style={{ position: "relative", minHeight: 520, overflow: "hidden" }}>
+            <HeroStarField />
+            <div
+              style={{
+                position: "absolute",
+                bottom: 10,
+                left: 6,
+                zIndex: 6,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "flex-end",
+                gap: 10,
+                maxWidth: "96%",
+                pointerEvents: "none",
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", maxWidth: 130 }}>
+                <div
+                  style={{
+                    marginBottom: 6,
+                    background: "#000",
+                    border: "1px solid #32cd32",
+                    padding: "8px 10px",
+                    fontFamily: "Inconsolata, monospace",
+                    fontSize: 15,
+                    color: "#32cd32",
+                    lineHeight: 1.4,
+                    textAlign: "center",
+                  }}
+                >
+                  I am Unit-A. She came from us.
+                </div>
+                <img
+                  src="/assets/mimi-pixel-fal/mimi-alien-parents-1-transparent.png"
+                  alt=""
+                  style={{
+                    width: 72,
+                    height: "auto",
+                    imageRendering: "pixelated",
+                    mixBlendMode: "screen",
+                  }}
+                />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", maxWidth: 130 }}>
+                <div
+                  style={{
+                    marginBottom: 6,
+                    background: "#000",
+                    border: "1px solid #32cd32",
+                    padding: "8px 10px",
+                    fontFamily: "Inconsolata, monospace",
+                    fontSize: 15,
+                    color: "#32cd32",
+                    lineHeight: 1.4,
+                    textAlign: "center",
+                  }}
+                >
+                  I am Unit-B. We sent her for you.
+                </div>
+                <img
+                  src="/assets/mimi-pixel-fal/mimi-alien-parents-1-transparent.png"
+                  alt=""
+                  style={{
+                    width: 72,
+                    height: "auto",
+                    imageRendering: "pixelated",
+                    mixBlendMode: "screen",
+                    transform: "scaleX(-1)",
+                  }}
+                />
+              </div>
+            </div>
           </div>
           <div
             style={{
@@ -687,94 +794,6 @@ export default function App() {
               width: "100%",
             }}
           >
-            {/* Alien parents introduction */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "12px 8px",
-                opacity: heroPhase === 0 ? 1 : 0,
-                pointerEvents: heroPhase === 0 ? "auto" : "none",
-                transition: "opacity 0.75s ease",
-                zIndex: heroPhase === 0 ? 2 : 0,
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  width: "100%",
-                  maxWidth: 340,
-                  justifyContent: "space-between",
-                  alignItems: "flex-end",
-                  gap: 8,
-                }}
-              >
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <img
-                    src="/assets/mimi-pixel-fal/mimi-alien-parents-1-transparent.png"
-                    alt=""
-                    style={{
-                      width: 100,
-                      maxWidth: "100%",
-                      height: "auto",
-                      imageRendering: "pixelated",
-                      mixBlendMode: "screen",
-                    }}
-                  />
-                  <div
-                    style={{
-                      marginTop: 10,
-                      background: "#000",
-                      border: "1px solid #32cd32",
-                      padding: "8px 10px",
-                      fontFamily: "Inconsolata, monospace",
-                      fontSize: 13,
-                      color: "#32cd32",
-                      lineHeight: 1.4,
-                      textAlign: "center",
-                      maxWidth: 150,
-                    }}
-                  >
-                    I am Unit-A. She came from us.
-                  </div>
-                </div>
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <img
-                    src="/assets/mimi-pixel-fal/mimi-alien-parents-1-transparent.png"
-                    alt=""
-                    style={{
-                      width: 100,
-                      maxWidth: "100%",
-                      height: "auto",
-                      imageRendering: "pixelated",
-                      mixBlendMode: "screen",
-                      transform: "scaleX(-1)",
-                    }}
-                  />
-                  <div
-                    style={{
-                      marginTop: 10,
-                      background: "#000",
-                      border: "1px solid #32cd32",
-                      padding: "8px 10px",
-                      fontFamily: "Inconsolata, monospace",
-                      fontSize: 13,
-                      color: "#32cd32",
-                      lineHeight: 1.4,
-                      textAlign: "center",
-                      maxWidth: 150,
-                    }}
-                  >
-                    I am Unit-B. We sent her for you.
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Mimi descent */}
             <div
               style={{
                 display: "flex",
@@ -876,7 +895,7 @@ export default function App() {
               borderLeft: "4px solid #32cd32",
               paddingLeft: 12,
               fontFamily: "'Press Start 2P', monospace",
-              fontSize: 13,
+                fontSize: 15,
               color: "#32cd32",
               lineHeight: 1.8,
             }}
@@ -891,7 +910,7 @@ export default function App() {
               background: "#000",
               color: "#32cd32",
               padding: 16,
-              fontSize: 13,
+              fontSize: 15,
               margin: 0,
               border: "2px solid #32cd32",
               overflow: "auto",
@@ -913,7 +932,7 @@ export default function App() {
               padding: 12,
               background: "rgba(26, 26, 26, 0.12)",
               fontFamily: "Inconsolata, monospace",
-              fontSize: 13,
+              fontSize: 15,
               color: "#3d4538",
               lineHeight: 1.5,
             }}
@@ -935,7 +954,7 @@ export default function App() {
               textAlign: "center",
               padding: "14px 16px",
               fontFamily: "'Press Start 2P', monospace",
-              fontSize: 11,
+              fontSize: 13,
               lineHeight: 1.7,
               textDecoration: "none",
               boxSizing: "border-box",
@@ -957,8 +976,24 @@ export default function App() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            position: "relative",
           }}
         >
+          <img
+            src="/assets/mimi-pixel-fal/mimi-alien-parents-1-transparent.png"
+            alt=""
+            style={{
+              position: "absolute",
+              bottom: 20,
+              left: 16,
+              width: 56,
+              height: "auto",
+              imageRendering: "pixelated",
+              mixBlendMode: "screen",
+              zIndex: 2,
+              pointerEvents: "none",
+            }}
+          />
           <div style={{ position: "relative", width: "100%", maxWidth: 420, margin: 0 }}>
             <PixelImg file="mimi-mac-1-transparent.png" alt="Mac" style={{ width: "100%", height: "auto", display: "block" }} />
             <div
@@ -974,7 +1009,7 @@ export default function App() {
                 display: "flex",
                 flexDirection: "column",
                 textAlign: "left",
-                fontSize: 13,
+                fontSize: 15,
                 color: "#32cd32",
                 fontFamily: "Inconsolata, monospace",
                 overflow: "hidden",
@@ -1025,14 +1060,14 @@ export default function App() {
                   type="button"
                   className="mimi-btn-lime"
                   onClick={macChat.send}
-                  style={{ padding: "6px 10px", fontSize: 11, flexShrink: 0 }}
+                  style={{ padding: "6px 10px", fontSize: 13, flexShrink: 0 }}
                 >
                   SEND
                 </button>
               </div>
             </div>
           </div>
-          <p style={{ fontSize: 13, color: "#4c5a42", marginTop: 20, marginBottom: 0 }}>
+          <p style={{ fontSize: 15, color: "#4c5a42", marginTop: 20, marginBottom: 0 }}>
             // Insert Mimi AI v1.0, 1993
           </p>
           <PixelImg file="mimi-floppy-3-transparent.png" alt="Floppy" style={{ maxWidth: 100, margin: "12px auto 0" }} />
@@ -1247,7 +1282,7 @@ export default function App() {
                 onTouchStart={() => startCraneHold(true)}
                 onTouchEnd={stopCraneHold}
                 style={{
-                  fontSize: 9,
+                  fontSize: 13,
                   lineHeight: 1.6,
                   padding: "10px 14px",
                   userSelect: "none",
@@ -1261,7 +1296,7 @@ export default function App() {
                 onClick={dropCrane}
                 disabled={craneDropping}
                 style={{
-                  fontSize: 9,
+                  fontSize: 13,
                   lineHeight: 1.6,
                   padding: "10px 14px",
                 }}
@@ -1278,7 +1313,7 @@ export default function App() {
                 onTouchStart={() => startCraneHold(false)}
                 onTouchEnd={stopCraneHold}
                 style={{
-                  fontSize: 9,
+                  fontSize: 13,
                   lineHeight: 1.6,
                   padding: "10px 14px",
                   userSelect: "none",
@@ -1318,7 +1353,7 @@ export default function App() {
             }}
           >
             <PixelImg
-              file="mimi-hero-1-transparent.png"
+              file="mimi-for-you-final-transparent.png"
               alt="For You"
               style={{
                 width: 260,
@@ -1372,7 +1407,7 @@ export default function App() {
             }}
           >
             <PixelImg
-              file="mimi-hero-1-transparent.png"
+              file="mimi-for-them-final-transparent.png"
               alt="For Them"
               style={{
                 width: 260,
@@ -1464,14 +1499,14 @@ export default function App() {
                   background: "#1a1a1a",
                   color: "#32cd32",
                   fontFamily: "Inconsolata, monospace",
-                  fontSize: 14,
+                  fontSize: 15,
                   lineHeight: 1.45,
                 }}
               >
                 <div
                   style={{
                     fontFamily: "'Press Start 2P', monospace",
-                    fontSize: 10,
+                    fontSize: 13,
                     color: "#32cd32",
                     marginBottom: 10,
                     lineHeight: 1.6,
@@ -1647,7 +1682,7 @@ export default function App() {
       <section>
         <div className="chapter-bar">CHAPTER 8: MISSION_COMPLETE();</div>
         <div style={{ position: "relative", borderBottom: "2px solid #000", background: "#a5a2a2" }}>
-          <PixelImg file="mimi-vacation-transparent.png" alt="Vacation" style={{ width: "100%", maxHeight: 480, objectFit: "cover", display: "block" }} />
+          <PixelImg file="mimi-vacation-transparent.png" alt="Vacation" style={{ width: "100%", height: "auto", display: "block" }} />
           <div
             className="beach-text-panel"
             style={{
@@ -1775,7 +1810,7 @@ export default function App() {
                 ENLIST_NOW();
               </button>
             </form>
-            <p style={{ fontFamily: "Inconsolata, monospace", fontSize: 13, color: "#4C5A42", marginTop: 20, marginBottom: 0, lineHeight: 1.5 }}>
+            <p style={{ fontFamily: "Inconsolata, monospace", fontSize: 15, color: "#4C5A42", marginTop: 20, marginBottom: 0, lineHeight: 1.5 }}>
               Limited spots available. Mimi works with businesses that are ready. When capacity is full, the waitlist opens.
             </p>
           </div>

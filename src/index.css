@@ -23,10 +23,11 @@ html {
 
 body {
   margin: 0;
-  background: var(--hardware-gray);
+  background: #1a1a1a;
   color: var(--forest);
   font-family: "Inconsolata", monospace;
-  font-size: 14px;
+  font-size: 15px;
+  min-height: 100vh;
   line-height: 1.5;
 }
 
@@ -35,21 +36,98 @@ h2,
 .logotype {
   font-family: "Press Start 2P", monospace;
   font-weight: 400;
+  font-size: max(13px, 1em);
 }
 
 a {
   color: var(--lime);
 }
 
-button {
+/* Physical 3D lime buttons */
+button.mimi-btn-lime,
+a.mimi-btn-lime {
   font-family: "Inconsolata", monospace;
   cursor: pointer;
-  border: 2px solid var(--black);
+  border-top: 3px solid #666;
+  border-left: 3px solid #555;
+  border-bottom: 3px solid #000;
+  border-right: 3px solid #111;
+  background: linear-gradient(to bottom, #3adf3a, #28a828);
+  color: #000;
+  font-weight: 700;
 }
 
-input,
-select,
-textarea {
+button.mimi-btn-lime:active,
+a.mimi-btn-lime:active {
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.45);
+  transform: translateY(1px);
+}
+
+/* Terminal / dark physical buttons */
+button.mimi-btn-dark {
+  font-family: "Press Start 2P", monospace;
+  cursor: pointer;
+  border-top: 3px solid #444;
+  border-left: 3px solid #333;
+  border-bottom: 3px solid #000;
+  border-right: 3px solid #111;
+  background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
+  color: #32cd32;
+}
+
+button.mimi-btn-dark:active:not(:disabled) {
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+  transform: translateY(1px);
+}
+
+button.mimi-btn-dark:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Default button fallback (physical frame) */
+button:not(.mimi-btn-lime):not(.mimi-btn-dark) {
+  font-family: "Inconsolata", monospace;
+  cursor: pointer;
+  border-top: 3px solid #666;
+  border-left: 3px solid #555;
+  border-bottom: 3px solid #000;
+  border-right: 3px solid #111;
+}
+
+button:not(.mimi-btn-lime):not(.mimi-btn-dark):active {
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+  transform: translateY(1px);
+}
+
+/* Waitlist / form recessed inputs */
+input.waitlist-field,
+select.waitlist-field,
+textarea.waitlist-field {
+  font-family: "Inconsolata", monospace;
+  font-size: 15px;
+  background: #b8b5b5;
+  border: 2px solid #000;
+  color: #000;
+  border-top: 2px solid #888;
+  border-left: 2px solid #888;
+  border-bottom: 2px solid #fff;
+  border-right: 2px solid #fff;
+  padding: 10px 12px;
+  border-radius: 0 !important;
+  width: 100%;
+}
+
+input.waitlist-field:focus,
+select.waitlist-field:focus,
+textarea.waitlist-field:focus {
+  outline: 2px solid #32cd32;
+  outline-offset: 0;
+}
+
+input:not(.waitlist-field),
+select:not(.waitlist-field),
+textarea:not(.waitlist-field) {
   font-family: "Inconsolata", monospace;
   border: 2px solid var(--black);
   border-radius: 0 !important;
@@ -62,13 +140,19 @@ textarea {
   border-bottom: 2px solid var(--black);
 }
 
+/* Dymo tape chapter headers */
 .chapter-bar {
-  background: var(--black);
-  color: var(--lime);
-  font-family: "Inconsolata", monospace;
-  font-size: 11px;
-  padding: 10px 16px;
-  border-bottom: 2px solid var(--black);
+  background: linear-gradient(to bottom, #4a4a4a, #2a2a2a);
+  color: #32cd32;
+  font-family: "Press Start 2P", monospace;
+  font-size: 14px;
+  padding: 8px 20px;
+  border-top: 3px solid #666;
+  border-bottom: 3px solid #000;
+  letter-spacing: 3px;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+  border-left: none;
+  border-right: none;
 }
 
 .pixel-img {
@@ -77,6 +161,81 @@ textarea {
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+/* CRT monitor bezel — wraps entire site */
+.crt-bezel-wrap {
+  max-width: 100%;
+  margin: 0 auto;
+  background: #1a1a1a;
+  border: 6px solid #000;
+  box-shadow:
+    inset 0 0 0 3px #333,
+    inset 0 0 0 6px #111;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Scanline overlay for dark / terminal areas */
+.scanlines {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+}
+
+/* Pong screen scanlines sit above game */
+.crt-pong-scan.scanlines::after {
+  z-index: 10;
+}
+
+/* System map: dark node (outset) */
+.node-physical-dark {
+  border-top: 3px solid #6a7a62;
+  border-left: 3px solid #5a6a52;
+  border-bottom: 3px solid #2a3228;
+  border-right: 3px solid #3a4238;
+  background: #4c5a42;
+  color: #c5c2c2;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 8px;
+}
+
+/* System map: lime gradient nodes */
+.node-physical-lime {
+  border-top: 3px solid #666;
+  border-left: 3px solid #555;
+  border-bottom: 3px solid #000;
+  border-right: 3px solid #111;
+  background: linear-gradient(to bottom, #3adf3a, #28a828);
+  color: #000;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px;
 }
 
 @media (max-width: 768px) {
@@ -102,5 +261,12 @@ textarea {
   }
   .arcade-grid {
     grid-template-columns: 1fr !important;
+  }
+  .beach-text-panel {
+    max-width: 100% !important;
+    right: 0 !important;
+    left: 0 !important;
+    top: auto !important;
+    bottom: 0 !important;
   }
 }
