@@ -94,7 +94,11 @@ function HeroStarField() {
         className="scanlines"
         style={{
           position: "absolute",
-          inset: 0,
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: 0,
           overflow: "hidden",
           pointerEvents: "none",
         }}
@@ -625,14 +629,13 @@ export default function App() {
       {/* 1. Floppy disk header */}
       <section style={sectionStyle({ background: DARK, padding: "20px 16px 24px", textAlign: "center" })}>
         <img
-          src={A("mimi-floppy-3-transparent.png")}
+          src={A("mimi-floppy-1.png")}
           alt=""
           style={{
-            width: 160,
+            width: 200,
             height: "auto",
             display: "block",
             margin: "0 auto",
-            ...IMG_BASE,
           }}
         />
         <div
@@ -725,24 +728,38 @@ export default function App() {
             position: "relative",
           }}
         >
+          {/* Star field as true background layer — fills entire dark panel */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              zIndex: 0,
+              pointerEvents: "none",
+            }}
+          >
+            <HeroStarField />
+          </div>
           <div
             style={{
               position: "relative",
               minHeight: 520,
               overflow: "hidden",
+              zIndex: 1,
             }}
           >
-            <HeroStarField />
             <div
               style={{
                 position: "absolute",
-                bottom: 10,
-                left: 6,
-                zIndex: 6,
+                bottom: 0,
+                left: 0,
+                zIndex: 2,
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "flex-end",
-                gap: 10,
+                gap: 12,
                 maxWidth: "96%",
                 pointerEvents: "none",
               }}
@@ -752,15 +769,15 @@ export default function App() {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  maxWidth: 130,
+                  maxWidth: 160,
                 }}
               >
                 <div
                   style={{
-                    marginBottom: 6,
+                    marginBottom: 8,
                     background: BLACK,
                     border: `1px solid ${LIME}`,
-                    padding: "8px 10px",
+                    padding: "10px 12px",
                     fontFamily: FONT_BODY,
                     fontSize: FS_BODY,
                     color: LIME,
@@ -773,7 +790,7 @@ export default function App() {
                 <img
                   src={A("mimi-alien-parents-1-transparent.png")}
                   alt=""
-                  style={{ width: 72, height: "auto", ...IMG_BASE }}
+                  style={{ width: 120, minWidth: 120, height: "auto", ...IMG_BASE }}
                 />
               </div>
               <div
@@ -781,15 +798,15 @@ export default function App() {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  maxWidth: 130,
+                  maxWidth: 160,
                 }}
               >
                 <div
                   style={{
-                    marginBottom: 6,
+                    marginBottom: 8,
                     background: BLACK,
                     border: `1px solid ${LIME}`,
-                    padding: "8px 10px",
+                    padding: "10px 12px",
                     fontFamily: FONT_BODY,
                     fontSize: FS_BODY,
                     color: LIME,
@@ -803,7 +820,8 @@ export default function App() {
                   src={A("mimi-alien-parents-1-transparent.png")}
                   alt=""
                   style={{
-                    width: 72,
+                    width: 120,
+                    minWidth: 120,
                     height: "auto",
                     transform: "scaleX(-1)",
                     ...IMG_BASE,
@@ -821,6 +839,7 @@ export default function App() {
               position: "relative",
               minHeight: 460,
               width: "100%",
+              zIndex: 1,
             }}
           >
             <div
@@ -1029,22 +1048,22 @@ export default function App() {
             style={{
               position: "relative",
               width: "100%",
-              maxWidth: 420,
+              maxWidth: 500,
               margin: 0,
             }}
           >
             <PixelImg
-              file="mimi-mac-1-transparent.png"
+              file="mimi-mac-frontview-transparent.png"
               alt="Mac"
-              style={{ width: "100%", height: "auto", display: "block" }}
+              style={{ width: 500, maxWidth: "100%", height: "auto", display: "block" }}
             />
             <div
               style={{
                 position: "absolute",
                 top: "12%",
-                left: "18%",
-                width: "62%",
-                height: "45%",
+                left: "15%",
+                width: "70%",
+                height: "50%",
                 background: BLACK,
                 display: "flex",
                 flexDirection: "column",
